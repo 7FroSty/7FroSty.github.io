@@ -1,12 +1,14 @@
 const cards=document.querySelectorAll(".card");
 let htmlPoints=document.querySelector("#points");
 let htmlTime=document.querySelector("#time");
-let bgmusic=new Audio("audio/forsenbajs.mp3");
-let notmatch=new Audio("audio/unlucky.mp3");
+let stats=document.querySelector(".stats");
+let scoreBoard=document.querySelector(".scoreBoard");
+let bgMusic=new Audio("audio/forsenbajs.mp3");
+let notMatch=new Audio("audio/unlucky.mp3");
 let match=new Audio("audio/godgamer.mp3");
 let victory=new Audio("audio/doubters.mp3");
-bgmusic.volume=0.15;
-notmatch.volume=0.035;
+bgMusic.volume=0.1;
+notMatch.volume=0.035;
 match.volume=0.25;
 victory.volume=0.25;
 let canFlip=true;
@@ -17,6 +19,11 @@ let time=0;
 let correctPicks=0;
 let firstClick=true;
 let timer;
+let username;
+
+document.addEventListener("DOMContentLoaded", function(){
+    username=prompt("Give me a username!");
+})
 
 cards.forEach(card=>card.addEventListener("click", flipCard));
 
@@ -26,21 +33,32 @@ function shuffleCards() {
 
 shuffleCards();
 
+if (typeof bgMusic.loop=="boolean"){
+    bgMusic.loop=true;
+}
+else{
+    bgMusic.addEventListener("ended", function(){
+        this.currentTime=0;
+        this.play();
+    }, false);
+}
+
 function flipCard(){
     if(firstClick){
         timer=setInterval(function(){
             time++;
             htmlTime.innerHTML=time;
         }, 1000);
-        bgmusic.play();
         firstClick=false;
     }
+
+    bgMusic.play();
 
     if(!canFlip) return;
 
     if(firstCard===this) return;
 
-    this.classList.toggle("flipped");
+    this.classList.add("flipped");
 
     if(!hasFlipped){
         hasFlipped=true;
@@ -62,15 +80,20 @@ function doesItMatch(){
         points+=10;
         htmlPoints.innerHTML=points;
         correctPicks+=1;
-        if(correctPicks==8){
+        if(correctPicks===8){
+            localStorage.setItem("user", username);
+            localStorage.setItem("score", points);
+            localStorage.setItem("seconds", time);
             clearTimeout(timer);
-            bgmusic.pause();
+            stats.innerHTML="Username: "+localStorage.getItem("user")+"<br /> Score: "+localStorage.getItem("score")+" points<br />Time: "+localStorage.getItem("seconds")+" seconds";
+            scoreBoard.classList.remove("hidden");
+            bgMusic.pause();
             victory.play();
         }
     }
 
     if(!itMatches){
-        notmatch.play();
+        notMatch.play();
         unflipCards();
         if(points>0) points-=2;
         htmlPoints.innerHTML=points;
@@ -100,5 +123,9 @@ function resetBoard(){
     hasFlipped=false;
     firstCard=null;
     secondCard=null;
+}
+
+function refreshPage(){
+    window.location.reload();
 }
 
