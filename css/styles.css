@@ -122,6 +122,19 @@ header{
     padding: 10px;
 }
 
+.players{
+    text-decoration: underline;
+    text-decoration-color: #b9a3e3;
+}
+
+.bestStats{
+    font-size: 16px;
+}
+
+.stats{
+    font-size: 16px;
+}
+
 #playAgain{
     background-color: #b9a3e3;
     color: white;

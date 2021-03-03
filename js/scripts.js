@@ -1,6 +1,7 @@
 const cards=document.querySelectorAll(".card");
 let htmlPoints=document.querySelector("#points");
 let htmlTime=document.querySelector("#time");
+let bestStats=document.querySelector(".bestStats");
 let stats=document.querySelector(".stats");
 let scoreBoard=document.querySelector(".scoreBoard");
 let bgMusic=new Audio("audio/forsenbajs.mp3");
@@ -84,7 +85,25 @@ function doesItMatch(){
             localStorage.setItem("user", username);
             localStorage.setItem("score", points);
             localStorage.setItem("seconds", time);
+
+            if(localStorage.getItem("bestUser")==null){
+                localStorage.setItem("bestUser", username);
+                localStorage.setItem("bestScore", points);
+                localStorage.setItem("bestSeconds", time);
+            }
+            else if(localStorage.getItem("bestScore")<localStorage.getItem("score")){
+                localStorage.setItem("bestUser", username);
+                localStorage.setItem("bestScore", points);
+                localStorage.setItem("bestSeconds", time);
+            }
+            else if(localStorage.getItem("bestScore")===localStorage.getItem("score") && localStorage.getItem("bestSeconds")>localStorage.getItem("seconds")){
+                localStorage.setItem("bestUser", username);
+                localStorage.setItem("bestScore", points);
+                localStorage.setItem("bestSeconds", time);
+            }
+
             clearTimeout(timer);
+            bestStats.innerHTML="Username: "+localStorage.getItem("bestUser")+"<br /> Score: "+localStorage.getItem("bestScore")+" points<br />Time: "+localStorage.getItem("bestSeconds")+" seconds";
             stats.innerHTML="Username: "+localStorage.getItem("user")+"<br /> Score: "+localStorage.getItem("score")+" points<br />Time: "+localStorage.getItem("seconds")+" seconds";
             scoreBoard.classList.remove("hidden");
             bgMusic.pause();
